@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-producer-traces
+  labels:
+    app: kafka-producer-traces
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-producer-traces
+  template:
+    metadata:
+      labels:
+        app: kafka-producer-traces
+    spec:
+      containers:
+      - name: kafka-producer
+        image: docker.io/taffarelo3/kafka-producer-traces:v1.0.8
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

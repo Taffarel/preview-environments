@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: my-preview-apps
+  namespace: argocd  
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - pullRequest:
+      github:
+        owner: Taffarel
+        repo: preview-environments
+        labels:
+        - preview-ready
+      requeueAfterSeconds: 180
+  template:
+    metadata:
+      name: 'myapp-{{.branch}}'
+    spec:
+      source:
+        repoURL: 'https://github.com/Taffarel/preview-environments.git'
+        targetRevision: HEAD
+        path: kustomize-preview-app/ 
+        kustomize:
+          images:
+            - 'docker.io/taffarelo3/kafka-producer-traces:{{.branch_slug}}'
+      project: "default"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: 'preview-{{.branch_slug}}'
+      syncPolicy:
+        automated:
+          prune: true  
+        syncOptions:
+        - CreateNamespace=true 
