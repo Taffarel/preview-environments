@@ -4,6 +4,7 @@ metadata:
   name: kafka-producer-traces
   labels:
     app: kafka-producer-traces
+    version: v1.0.7
 spec:
   replicas: 1
   selector:
